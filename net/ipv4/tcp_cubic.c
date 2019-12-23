@@ -386,34 +386,14 @@ static void hystart_update(struct sock *sk, u32 delay)
 	struct bictcp *ca = inet_csk_ca(sk);
 	u32 threshold;
 
-	if (ca->found & hystart_detect)
-		return;
-
-	if (after(tp->snd_una, ca->end_seq))
-		bictcp_hystart_reset(sk);
-
 	if (hystart_detect & HYSTART_ACK_TRAIN) {
 		u32 now = bictcp_clock_us(sk);
 
 		/* first detection parameter - ack-train detection */
 		if ((s32)(now - ca->last_ack) <= hystart_ack_delta_us) {
 			ca->last_ack = now;
-
-			threshold = ca->delay_min + hystart_ack_delay(sk);
-
-			/* Hystart ack train triggers if we get ack past
-			 * ca->delay_min/2.
-			 * Pacing might have delayed packets up to RTT/2
-			 * during slow start.
-			 */
-			if (sk->sk_pacing_status == SK_PACING_NONE)
-				threshold >>= 1;
-
-			if ((s32)(now - ca->round_start) > threshold) {
+			if ((s32)(now - ca->round_start) > ca->delay_min >> 4) {
 				ca->found = 1;
-				pr_debug("hystart_ack_train (%u > %u) delay_min %u (+ ack_delay %u) cwnd %u\n",
-					 now - ca->round_start, threshold,
-					 ca->delay_min, hystart_ack_delay(sk), tp->snd_cwnd);
 				NET_INC_STATS(sock_net(sk),
 					      LINUX_MIB_TCPHYSTARTTRAINDETECT);
 				NET_ADD_STATS(sock_net(sk),
@@ -436,7 +416,7 @@ static void hystart_update(struct sock *sk, u32 delay)
 		} else {
 			if (ca->curr_rtt > ca->delay_min +
 			    HYSTART_DELAY_THRESH(ca->delay_min >> 3)) {
-				ca->found |= HYSTART_DELAY;
+				ca->found = 1;
 				NET_INC_STATS(sock_net(sk),
 					      LINUX_MIB_TCPHYSTARTDELAYDETECT);
 				NET_ADD_STATS(sock_net(sk),
@@ -471,7 +451,7 @@ static void cubictcp_acked(struct sock *sk, const struct ack_sample *sample)
 		ca->delay_min = delay;
 
 	/* hystart triggers when cwnd is larger than some threshold */
-	if (!ca->found && tcp_in_slow_start(tp) && hystart &&
+	if (!ca->found && hystart && tcp_in_slow_start(tp) &&
 	    tp->snd_cwnd >= hystart_low_window)
 		hystart_update(sk, delay);
 }
