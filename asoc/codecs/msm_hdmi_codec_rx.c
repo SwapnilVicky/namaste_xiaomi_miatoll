@@ -1,4 +1,4 @@
-/* Copyright (c) 2012-2018,2020 The Linux Foundation. All rights reserved.
+/* Copyright (c) 2012-2018,2020-2021 The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -196,9 +196,9 @@ static int msm_ext_disp_audio_type_get(struct snd_kcontrol *kcontrol,
 	SWITCH_DP_CODEC(codec_info, codec_data, dai_id);
 	rc = msm_ext_disp_select_audio_codec(codec_data->ext_disp_core_pdev,
 						&codec_info);
-	if(!codec_data->ext_disp_ops.get_audio_edid_blk ||
+	if(!codec_data->ext_disp_ops.cable_status ||
 	   !codec_data->ext_disp_ops.get_intf_id || rc) {
-		dev_err(codec->dev, "%s: get_audio_edid_blk() or get_intf_id is NULL\n",
+		dev_err(codec->dev, "%s: cable_status() or get_intf_id is NULL\n",
 			__func__);
 		mutex_unlock(&codec_data->dp_ops_lock);
 		return -EINVAL;
