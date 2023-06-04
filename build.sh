@@ -5,7 +5,7 @@
 ## Copy this script inside the kernel directory
 KERNEL_DEFCONFIG=cust_defconfig
 ANYKERNEL3_DIR=$PWD/AnyKernel3/
-FINAL_KERNEL_ZIP=Namaste-Kernel-miatoll-$(date '+%Y%m%d').zip
+FINAL_KERNEL_ZIP=Namaste-Kernel-316-miatoll-$(date '+%Y%m%d').zip
 export PATH="$HOME/cosmic/bin:$PATH"
 export ARCH=arm64
 export SUBARCH=arm64
@@ -81,10 +81,3 @@ sha1sum $FINAL_KERNEL_ZIP
 BUILD_END=$(date +"%s")
 DIFF=$(($BUILD_END - $BUILD_START))
 echo -e "$yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
-
-echo "**** Uploading your zip now ****"
-if command -v curl &> /dev/null; then
-curl -T $FINAL_KERNEL_ZIP temp.sh
-else
-echo "Zip: $FINAL_KERNEL_ZIP"
-fi
