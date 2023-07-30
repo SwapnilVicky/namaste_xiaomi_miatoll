@@ -44,10 +44,9 @@ make -j$(nproc --all) O=out \
                       CC=clang \
                       CROSS_COMPILE=aarch64-linux-gnu- \
                       CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-                      NM=llvm-nm \
-                      OBJCOPY=llvm-objcopy \
-                      OBJDUMP=llvm-objdump \
-                      STRIP=llvm-strip
+                      LD=ld.lld \
+                      LLVM=1 \
+                      LLVM_IAS=1
 
 echo "**** Verify Image.gz-dtb & dtbo.img ****"
 ls $PWD/out/arch/arm64/boot/Image.gz-dtb
