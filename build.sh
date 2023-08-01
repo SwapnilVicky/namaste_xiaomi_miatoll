@@ -10,7 +10,7 @@ KERNEL_DIR="$(pwd)"
 
 ##----------------------------------------------------------##
 # Kernel Version Code
-VERSION=Pvt
+VERSION=r1
 
 ##----------------------------------------------------------##
 # Device Name and Model
@@ -21,8 +21,9 @@ DEVICE=MiAtoll
 DEFCONFIG=cust_defconfig
 
 # Files
-IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz-dtb
+IMAGE=$(pwd)/out/arch/arm64/boot/Image.gz
 DTBO=$(pwd)/out/arch/arm64/boot/dtbo.img
+DTB=$(pwd)/out/arch/arm64/boot/dts/qcom/cust-atoll-ab.dtb
 
 # Verbose Build
 VERBOSE=0
@@ -37,13 +38,13 @@ DATE=$(TZ=Asia/Kolkata date +"%Y%m%d-%T")
 TANGGAL=$(date +"%F%S")
 
 # Specify Final Zip Name
-ZIPNAME=DFC
+ZIPNAME=Thunder
 FINAL_ZIP=${ZIPNAME}-${VERSION}-${DEVICE}-${TANGGAL}.zip
 
 ##----------------------------------------------------------##
 # Specify compiler.
 
-COMPILER=proton-13
+COMPILER=cosmic
 
 ##----------------------------------------------------------##
 # Specify Linker
@@ -60,43 +61,36 @@ function cloneTC() {
 	git clone --depth=1 https://gitlab.com/ElectroPerf/atom-x-clang.git clang
 	PATH="${KERNEL_DIR}/clang/bin:$PATH"
 
-        elif [ $COMPILER = "neutron" ];
-        then
-        post_msg " Cloning Neutron Clang ToolChain "
-        git clone --depth=1 https://gitlab.com/dakkshesh07/neutron-clang.git clang
-        PATH="${KERNEL_DIR}/clang/bin:$PATH"
-
 	elif [ $COMPILER = "azure" ];
 	then
         post_msg " Cloning Azure Clang ToolChain "
 	git clone --depth=1 https://gitlab.com/Panchajanya1999/azure-clang.git clang
 	PATH="${KERNEL_DIR}/clang/bin:$PATH"
 
-	elif [ $COMPILER = "proton-13" ];
+	elif [ $COMPILER = "cosmic" ];
 	then
-        post_msg " Cloning Proton Clang 13 ToolChain "
+	post_msg " Cloning Cosmic Clang ToolChain "
+	git clone --depth=1 https://gitlab.com/GhostMaster69-dev/cosmic-clang.git clang
+	PATH="${KERNEL_DIR}/clang/bin:$PATH"
+
+	elif [ $COMPILER = "proton" ];
+	then
+	post_msg " Cloning Proton Clang ToolChain "
 	git clone --depth=1 https://github.com/kdrag0n/proton-clang.git clang
 	PATH="${KERNEL_DIR}/clang/bin:$PATH"
 
-        elif [ $COMPILER = "proton-15" ];
+	elif [ $COMPILER = "silont" ];
 	then
-	post_msg " Cloning Proton Clang 15 ToolChain "
-	git clone --depth=1 https://gitlab.com/LeCmnGend/proton-clang.git clang
+	post_msg " Cloning SilonT Clang ToolChain "
+	git clone --depth=1 https://github.com/silont-project/silont-clang.git clang
 	PATH="${KERNEL_DIR}/clang/bin:$PATH"
-
-	elif [ $COMPILER = "eva" ];
-	then
-        post_msg " Cloning Eva GCC ToolChain "
-	git clone --depth=1 https://github.com/mvaisakh/gcc-arm64.git gcc64
-	git clone --depth=1 https://github.com/mvaisakh/gcc-arm.git gcc32
-	PATH=$KERNEL_DIR/gcc64/bin/:$KERNEL_DIR/gcc32/bin/:/usr/bin:$PATH
 
 	elif [ $COMPILER = "aosp" ];
 	then
-        post_msg " Cloning Aosp Clang 15.0.2 ToolChain "
+        post_msg " Cloning Aosp Clang 17.0.3 ToolChain "
         mkdir aosp-clang
         cd aosp-clang || exit
-	wget -q https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r468909.tar.gz
+	wget -q https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r498229.tar.gz
         tar -xf clang*
         cd .. || exit
 	git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git --depth=1 gcc
@@ -104,7 +98,7 @@ function cloneTC() {
 	PATH="${KERNEL_DIR}/aosp-clang/bin:${KERNEL_DIR}/gcc/bin:${KERNEL_DIR}/gcc32/bin:${PATH}"
 	fi
         # Clone AnyKernel
-        git clone --depth=1 https://github.com/txexcalibur/AnyKernel3
+        git clone --depth=1 https://github.com/txexcalibur/AnyKernel3 -b pvt
 
         }
 
@@ -129,7 +123,7 @@ function exports() {
         export SUBARCH=arm64
 
         # KBUILD HOST and USER
-        export KBUILD_BUILD_HOST=Github-Workflows
+        export KBUILD_BUILD_HOST=Github-CI
         export KBUILD_BUILD_USER="TxExcalibur"
 
         # CI
@@ -214,7 +208,6 @@ START=$(date +"%s")
 	       CC=clang \
                HOSTCC=clang \
 	       HOSTCXX=clang++ \
-	       CLANG_TRIPLE=aarch64-linux-gnu- \
 	       CROSS_COMPILE=aarch64-linux-android- \
 	       CROSS_COMPILE_ARM32=arm-linux-androideabi- \
                LD=${LINKER} \
@@ -243,6 +236,7 @@ function zipping() {
 	# Copy Files To AnyKernel3 Zip
 	cp $IMAGE AnyKernel3
 	cp $DTBO AnyKernel3
+	cp $DTB AnyKernel3/dtb
 
 	# Zipping and Push Kernel
 	cd AnyKernel3 || exit 1
