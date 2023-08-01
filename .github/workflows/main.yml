@@ -1,6 +1,6 @@
 on:
   push:
-    branches: [ dfc ]
+    branches: [ perf ]
 jobs:
   node-docker:
     runs-on: ubuntu-latest
