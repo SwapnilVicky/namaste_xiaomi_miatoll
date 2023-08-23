@@ -10,7 +10,7 @@ export PATH="$HOME/clang17-0-3/bin:$PATH"
 export ARCH=arm64
 export KBUILD_BUILD_HOST=Los-X-Miatoll
 export KBUILD_BUILD_USER=SwapnilVicky
-export KBUILD_COMPILER_STRING="$($HOME/clang17-0-2/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+export KBUILD_COMPILER_STRING="$($HOME/clang17-0-3/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 
 if ! [ -d "$HOME/clang17-0-3" ]; then
 echo "Clang not found! Cloning..."
