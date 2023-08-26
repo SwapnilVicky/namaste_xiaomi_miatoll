@@ -6,15 +6,15 @@
 KERNEL_DEFCONFIG=cust_defconfig
 ANYKERNEL3_DIR=$PWD/AnyKernel3/
 FINAL_KERNEL_ZIP=Namaste-Kernel-miatoll-$(date '+%Y%m%d').zip
-export PATH="$HOME/clang17-0-2/bin:$PATH"
+export PATH="$HOME/clang17-0-3/bin:$PATH"
 export ARCH=arm64
-export KBUILD_BUILD_HOST=SwapnilVicky
+export KBUILD_BUILD_HOST=Los-X-Miatoll
 export KBUILD_BUILD_USER=SwapnilVicky
-export KBUILD_COMPILER_STRING="$($HOME/clang17-0-2/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
+export KBUILD_COMPILER_STRING="$($HOME/clang17-0-3/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')"
 
-if ! [ -d "$HOME/clang17-0-2" ]; then
+if ! [ -d "$HOME/clang17-0-3" ]; then
 echo "Clang not found! Cloning..."
-if ! git clone -q https://gitlab.com/crdroidandroid/android_prebuilts_clang_host_linux-x86_clang-r487747c --depth=1 --single-branch ~/clang17-0-2; then
+if ! git clone -q https://gitlab.com/Joker-V2/prebuilts_clang_host_linux-x86_clang-r498229 --depth=1 --single-branch ~/clang17-0-3; then
 echo "Cloning failed! Aborting..."
 exit 1
 fi
