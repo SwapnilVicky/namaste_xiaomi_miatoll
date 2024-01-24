@@ -5,7 +5,7 @@
 ## Copy this script inside the kernel directory
 KERNEL_DEFCONFIG=cust_defconfig
 ANYKERNEL3_DIR=$PWD/AnyKernel3/
-FINAL_KERNEL_ZIP=VelvetPowerPulse-r2-KSU-MiAtoll-$(date '+%Y%m%d').zip
+FINAL_KERNEL_ZIP=Thunder-Miui-r1-KSU-MiAtoll-$(date '+%Y%m%d').zip
 export PATH="$HOME/TxExcalibur/bin:$PATH"
 export ARCH=arm64
 export KBUILD_BUILD_HOST=Github-CI
